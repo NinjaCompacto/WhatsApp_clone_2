@@ -11,7 +11,6 @@ public class Conversa {
     private String idDestinatario;
     private String ultimaMensagem;
     private Usuario usuarioExibicao;
-    private String imagem;
 
 
     public Conversa() {
@@ -53,12 +52,5 @@ public class Conversa {
 
     public void setUsuarioExibicao(Usuario usuarioExibicao) {
         this.usuarioExibicao = usuarioExibicao;
-    }
-    public String getImagem() {
-        return imagem;
-    }
-
-    public void setImagem(String imagem) {
-        this.imagem = imagem;
     }
 }
