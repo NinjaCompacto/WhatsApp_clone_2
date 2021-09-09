@@ -2,13 +2,33 @@ package com.example.whatsapp.Fragments;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.whatsapp.Helper.UsuarioFirebase;
+import com.example.whatsapp.Model.Conversa;
+import com.example.whatsapp.Model.Usuario;
 import com.example.whatsapp.R;
+import com.example.whatsapp.adapter.ConversasAdapter;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import configfirebase.ConfiguraçãoFirebase;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -16,6 +36,13 @@ import com.example.whatsapp.R;
  * create an instance of this fragment.
  */
 public class ConversasFragment extends Fragment {
+
+    private RecyclerView recyclerView;
+    private ConversasAdapter conversasAdapter;
+    private List<Conversa> listConversas = new ArrayList<>();
+    private String idusuario = UsuarioFirebase.getIdUsuario();
+    private  ChildEventListener childEventListenerconversas;
+    private DatabaseReference conversaref;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -58,9 +85,72 @@ public class ConversasFragment extends Fragment {
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        conversaref.removeEventListener(childEventListenerconversas);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        recuperarConversas();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_conversas, container, false);
+        View view1 = inflater.inflate(R.layout.fragment_conversas, container, false);
+        recyclerView =view1.findViewById(R.id.recyclerListaConversas);
+
+        //configurando adpter
+        conversasAdapter = new ConversasAdapter(listConversas,getActivity());
+        //configurando recycler
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(conversasAdapter);
+
+        //configura conversasref
+        String idusuario = UsuarioFirebase.getIdUsuario();
+        conversaref = ConfiguraçãoFirebase.getDatabaseReference().child("conversas").child(idusuario);
+
+        return view1;
     }
+
+
+    //resolver problema de recuperação de dados para listagem
+    public void recuperarConversas () {
+        listConversas.clear();
+        childEventListenerconversas =conversaref.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot snapshot,String previousChildName) {
+            //recuperar conversas
+                Conversa conversa = snapshot.getValue(Conversa.class);
+                listConversas.add(conversa);
+                conversasAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot snapshot,String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot snapshot, String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+
+            }
+        });
+    }
+
 }

@@ -14,11 +14,11 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/imageViewContato"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
-        android:src="@drawable/padrao" />
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imageViewContato"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/padrao" />
 
     <LinearLayout
         android:layout_width="match_parent"

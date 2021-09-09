@@ -22,6 +22,7 @@ public class ContatosAdapter extends RecyclerView.Adapter<ContatosAdapter.MyView
 
      private List<Usuario> contatos;
      private Context context;
+
     public ContatosAdapter(List<Usuario> listacontatos , Context c) {
         this.contatos = listacontatos;
         this.context = c;
@@ -36,7 +37,6 @@ public class ContatosAdapter extends RecyclerView.Adapter<ContatosAdapter.MyView
     @Override
     public void onBindViewHolder(ContatosAdapter.MyViewHolder holder, int position) {
         Usuario usuario = contatos.get (position);
-
         holder.nome.setText(usuario.getNome());
         holder.email.setText(usuario.getEmail());
 
