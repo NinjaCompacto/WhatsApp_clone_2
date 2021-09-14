@@ -15,6 +15,7 @@ import android.view.View;
 import com.example.whatsapp.Fragments.ContatosFragment;
 import com.example.whatsapp.Fragments.ConversasFragment;
 import com.google.firebase.auth.FirebaseAuth;
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
@@ -23,13 +24,13 @@ import configfirebase.ConfiguraçãoFirebase;
 
 public class MainActivity extends AppCompatActivity {
 
-    FirebaseAuth autenticacao = ConfiguraçãoFirebase.getAuth();
+    private FirebaseAuth autenticacao = ConfiguraçãoFirebase.getAuth();
+    private MaterialSearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         //ToolBar
         Toolbar toolbar = findViewById(R.id.toolbarPrincipal);
         toolbar.setTitle("WhatsApp");
@@ -47,6 +48,42 @@ public class MainActivity extends AppCompatActivity {
 
         SmartTabLayout smartTabLayout = findViewById(R.id.viewPagerTab);
         smartTabLayout.setViewPager(viewPager);
+
+        //configurando searchview
+        searchView = findViewById(R.id.materialSearchPrincipal);
+        //listener para searchview
+        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
+            @Override
+            public void onSearchViewShown() {
+
+            }
+
+            @Override
+            public void onSearchViewClosed() {
+            ConversasFragment conversasFragment = (ConversasFragment) adapter.getPage(0);
+            conversasFragment.recarregarConversas();
+            }
+        });
+        //listener para caixa de texto
+        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                //recuperando dados da fragment
+                ConversasFragment conversasFragment = (ConversasFragment) adapter.getPage(0);
+                if ( newText != null && !newText.isEmpty()){
+                    conversasFragment.PesquisarConversas(newText.toLowerCase());
+                }
+                if (newText.isEmpty()){
+                    conversasFragment.recarregarConversas();
+                }
+                return true;
+            }
+        });
     }
 
     //menu da toolbar
@@ -55,6 +92,10 @@ public class MainActivity extends AppCompatActivity {
         //inflar o menu da toolbar
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_main, menu);
+
+        //coonfigurando searchview
+        MenuItem item = menu.findItem(R.id.menuPesquisa);
+        searchView.setMenuItem(item);
 
         return super.onCreateOptionsMenu(menu);
 
@@ -69,10 +110,10 @@ public class MainActivity extends AppCompatActivity {
                //retorna para tela de login ( tela principal )
                finish();
                  break;
-            case R.id.menuConfiguracoes:
+           case R.id.menuConfiguracoes:
                 openConfigScreen();
                 break;
-       }
+        }
         return super.onOptionsItemSelected(item);
     }
 

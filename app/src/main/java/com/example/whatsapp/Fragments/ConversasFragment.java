@@ -180,4 +180,28 @@ public class ConversasFragment extends Fragment {
         });
     }
 
+    public void PesquisarConversas (String texto){
+
+        List<Conversa> listaConversasBusca = new ArrayList<>();
+        for (Conversa conversa : listConversas){
+
+            String nome = conversa.getUsuarioExibicao().getNome().toLowerCase();
+            String ultimmsg = conversa.getUltimaMensagem().toLowerCase();
+
+            if ( nome.contains(texto) || ultimmsg.contains(texto)){
+                listaConversasBusca.add(conversa);
+            }
+        }
+        conversasAdapter = new ConversasAdapter(listaConversasBusca,getActivity());
+        recyclerView.setAdapter(conversasAdapter);
+        conversasAdapter.notifyDataSetChanged();
+
+    }
+
+    public void recarregarConversas (){
+        conversasAdapter = new ConversasAdapter(listConversas,getActivity());
+        recyclerView.setAdapter(conversasAdapter);
+        conversasAdapter.notifyDataSetChanged();
+    }
+
 }
