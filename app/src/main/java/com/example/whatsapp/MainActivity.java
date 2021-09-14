@@ -61,7 +61,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSearchViewClosed() {
             ConversasFragment conversasFragment = (ConversasFragment) adapter.getPage(0);
+            ContatosFragment contatosFragment = (ContatosFragment) adapter.getPage(1);
             conversasFragment.recarregarConversas();
+            contatosFragment.recarregarContatos();
             }
         });
         //listener para caixa de texto
@@ -75,11 +77,14 @@ public class MainActivity extends AppCompatActivity {
             public boolean onQueryTextChange(String newText) {
                 //recuperando dados da fragment
                 ConversasFragment conversasFragment = (ConversasFragment) adapter.getPage(0);
+                ContatosFragment contatosFragment = (ContatosFragment) adapter.getPage(1);
                 if ( newText != null && !newText.isEmpty()){
                     conversasFragment.PesquisarConversas(newText.toLowerCase());
+                    contatosFragment.PesquisarContatos(newText.toLowerCase());
                 }
                 if (newText.isEmpty()){
                     conversasFragment.recarregarConversas();
+                    contatosFragment.recarregarContatos();
                 }
                 return true;
             }

@@ -25,6 +25,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import configfirebase.ConfiguraçãoFirebase;
 
@@ -133,6 +134,28 @@ public class ContatosFragment extends Fragment {
                 }));
 
         return view;
+    }
+
+    public void PesquisarContatos (String texto) {
+        List<Usuario> listacontatosbusca = new ArrayList<>();
+
+        for (Usuario usuario : listacontatos){
+            String email = usuario.getEmail().toLowerCase();
+            String nome = usuario.getNome().toLowerCase();
+            if (email.contains(texto) || nome.contains(texto)){
+                listacontatosbusca.add(usuario);
+                adapter = new ContatosAdapter(listacontatosbusca,getActivity());
+                recyclerViewListaContatos.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
+            }
+        }
+
+    }
+
+    public void recarregarContatos (){
+        adapter = new ContatosAdapter(listacontatos,getActivity());
+        recyclerViewListaContatos.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 
     public void recuperarContatos (){
