@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 
 import com.example.whatsapp.ChatActivity;
+import com.example.whatsapp.GrupoActivity;
 import com.example.whatsapp.Helper.RecyclerItemClickListener;
 import com.example.whatsapp.Helper.UsuarioFirebase;
 import com.example.whatsapp.Model.Usuario;
@@ -117,9 +118,15 @@ public class ContatosFragment extends Fragment {
                     @Override
                     public void onItemClick(View view, int position) {
                         Usuario usuarioSelecionado = listacontatos.get(position);
-                        Intent i = new Intent(getActivity(), ChatActivity.class);
-                        i.putExtra("chatcontato",usuarioSelecionado);
-                        startActivity(i);
+                        if(usuarioSelecionado.getEmail().isEmpty()){
+                            Intent i = new Intent(getActivity(), GrupoActivity.class);
+                            startActivity(i);
+                        }
+                        else {
+                            Intent i = new Intent(getActivity(), ChatActivity.class);
+                            i.putExtra("chatcontato", usuarioSelecionado);
+                            startActivity(i);
+                        }
                     }
 
                     @Override
@@ -132,6 +139,10 @@ public class ContatosFragment extends Fragment {
 
                     }
                 }));
+            Usuario itemgrupo = new Usuario();
+            itemgrupo.setEmail("");
+            itemgrupo.setNome("Novo grupo");
+            listacontatos.add(itemgrupo);
 
         return view;
     }
@@ -161,6 +172,10 @@ public class ContatosFragment extends Fragment {
     public void recuperarContatos (){
 
         listacontatos.clear();
+        Usuario itemgrupo = new Usuario();
+        itemgrupo.setEmail("");
+        itemgrupo.setNome("Novo grupo");
+        listacontatos.add(itemgrupo);
        valueEventListenerContatos = usuarioref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {

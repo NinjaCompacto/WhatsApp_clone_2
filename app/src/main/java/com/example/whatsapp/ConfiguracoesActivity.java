@@ -215,27 +215,6 @@ public class ConfiguracoesActivity extends AppCompatActivity {
 
     }
 
-    /*
-    //atualiza o nome no banco de dados assim que é atualizado
-    private void atualizarNomeBanco(String nome) {
-
-        String nomeatual = nome;
-        FirebaseUser user = UsuarioFirebase.getUsuarioatual();
-        String email = user.getEmail();
-        String emailcodificado = Base64Custom.codificarBase64(email);
-        DatabaseReference databaseReference = ConfiguraçãoFirebase.getDatabaseReference();
-        DatabaseReference usuario = databaseReference.child("usuarios").child(emailcodificado).child("nome");
-        usuario.setValue(nomeatual).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(Task<Void> task) {
-                if (!task.isSuccessful()){
-                    ToastMaker.makeToast(ConfiguracoesActivity.this,"Erro ao atualizar banco de dados");
-                }
-            }
-        });
-
-    }*/
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull  String[] permissions, @NonNull  int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
