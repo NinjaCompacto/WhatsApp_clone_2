@@ -16,10 +16,14 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/reclycerMembrosSelecionados"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:background="@color/cinza_claro"
+        android:scrollbars="horizontal"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/reccylcerMembros"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:background="@color/cinza_claro"
+        android:scrollbars="vertical"/>
 </LinearLayout>

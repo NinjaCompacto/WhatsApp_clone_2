@@ -1,34 +1,30 @@
 package com.example.whatsapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 
-import com.example.whatsapp.Fragments.ContatosFragment;
 import com.example.whatsapp.Helper.RecyclerItemClickListener;
 import com.example.whatsapp.Helper.UsuarioFirebase;
 import com.example.whatsapp.Model.Usuario;
 import com.example.whatsapp.adapter.ContatosAdapter;
 import com.example.whatsapp.adapter.GrupoSelecionadoAdapter;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
 
 import androidx.appcompat.widget.Toolbar;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,21 +39,40 @@ public class GrupoActivity extends AppCompatActivity {
     private ValueEventListener valueEventListenerMembros;
     private DatabaseReference usuariosref;
     private GrupoSelecionadoAdapter grupoSelecionadoAdapter;
+    private Toolbar toolbar;
+    private FloatingActionButton fab;
+
+    public void atualizarToolbar (){
+        int selecionados = listaMembrosSelecionados.size();
+        int total = listaMembors.size() + selecionados;
+        toolbar.setSubtitle(selecionados + " de " + total + " selecionados");
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_grupo);
         //configura toolbar
-        Toolbar toolbar = findViewById(R.id.toolbarPrincipal);
+        toolbar = findViewById(R.id.toolbarPrincipal);
         toolbar.setTitle("Novo Grupo");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        //configurações iniciais
+       //configurações iniciais
         recyclerMembros = findViewById(R.id.reccylcerMembros);
+        fab = findViewById(R.id.fabGrupo);
         recyclerMembrosSelecionados = findViewById(R.id.reclycerMembrosSelecionados);
         usuariosref = ConfiguraçãoFirebase.getDatabaseReference().child("usuarios");
+
+        //set ação para fab
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(GrupoActivity.this,CadastroGrupoActivity2.class);
+                i.putExtra("membros", (Serializable) listaMembrosSelecionados);
+                startActivity(i);
+            }
+        });
 
         //configurar adpter de membros
             //obs: Utilizar mesmo adapter dos contatos
@@ -76,10 +91,11 @@ public class GrupoActivity extends AppCompatActivity {
                     @Override
                     public void onItemClick(View view, int position) {
                         Usuario usuarioselecionado = listaMembors.get(position);
-                        listaMembors.remove(usuarioselecionado);
-                        contatosAdapter.notifyDataSetChanged();
                         listaMembrosSelecionados.add(usuarioselecionado);
                         grupoSelecionadoAdapter.notifyDataSetChanged();
+                        listaMembors.remove(usuarioselecionado);
+                        contatosAdapter.notifyDataSetChanged();
+                        atualizarToolbar();
                     }
 
                     @Override
@@ -112,6 +128,7 @@ public class GrupoActivity extends AppCompatActivity {
                 grupoSelecionadoAdapter.notifyDataSetChanged();
                 listaMembors.add(usuarioselecionado);
                 contatosAdapter.notifyDataSetChanged();
+                atualizarToolbar();
             }
 
             @Override
@@ -124,14 +141,6 @@ public class GrupoActivity extends AppCompatActivity {
 
             }
         }));
-
-        findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
     }
 
@@ -159,6 +168,7 @@ public class GrupoActivity extends AppCompatActivity {
                         listaMembors.add(usuario);
                     }
                     contatosAdapter.notifyDataSetChanged();
+                    atualizarToolbar();
                 }
             }
 
@@ -167,7 +177,6 @@ public class GrupoActivity extends AppCompatActivity {
 
             }
         });
-
     }
 
 }
