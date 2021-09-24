@@ -6,7 +6,10 @@
     android:layout_height="match_parent"
     tools:context=".CadastroGrupoActivity2">
 
-    <include layout="@layout/content_cadastro_grupo2" />
+    <include
+        layout="@layout/content_cadastro_grupo2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabGrupo"
@@ -14,6 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+        app:fabSize="normal"
+        app:srcCompat="@drawable/ic_baseline_check_24" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
