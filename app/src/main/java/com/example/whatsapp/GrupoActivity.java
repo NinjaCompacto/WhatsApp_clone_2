@@ -9,7 +9,6 @@ import com.example.whatsapp.Model.Usuario;
 import com.example.whatsapp.adapter.ContatosAdapter;
 import com.example.whatsapp.adapter.GrupoSelecionadoAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -60,7 +59,7 @@ public class GrupoActivity extends AppCompatActivity {
 
        //configurações iniciais
         recyclerMembros = findViewById(R.id.reccylcerMembros);
-        fab = findViewById(R.id.fabGrupo);
+        fab = findViewById(R.id.fabSalvarGrupo);
         recyclerMembrosSelecionados = findViewById(R.id.reclycerMembrosSelecionados);
         usuariosref = ConfiguraçãoFirebase.getDatabaseReference().child("usuarios");
 
@@ -70,6 +69,7 @@ public class GrupoActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent i = new Intent(GrupoActivity.this,CadastroGrupoActivity2.class);
                 i.putExtra("membros", (Serializable) listaMembrosSelecionados);
+                finish();
                 startActivity(i);
             }
         });

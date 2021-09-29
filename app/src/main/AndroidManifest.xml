@@ -20,7 +20,7 @@
             android:name=".CadastroGrupoActivity2"
             android:label="@string/title_activity_cadastro_grupo2"
             android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".GrupoActivity">
+            android:parentActivityName=".MainActivity">
         </activity>
         <activity
             android:name=".GrupoActivity"

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.whatsapp.Model.Conversa;
+import com.example.whatsapp.Model.Grupo;
 import com.example.whatsapp.Model.Mensagem;
 import com.example.whatsapp.Model.Usuario;
 import com.example.whatsapp.R;
@@ -39,17 +40,36 @@ public class ConversasAdapter extends RecyclerView.Adapter<ConversasAdapter.MyVi
     @Override
     public void onBindViewHolder(ConversasAdapter.MyViewHolder holder, int position) {
         Conversa conversa = contatosConversa.get(position);
-        Usuario usuario = conversa.getUsuarioExibicao();
-        holder.textNome.setText(usuario.getNome());
         holder.textUltimaMsg.setText(conversa.getUltimaMensagem());
 
-       if (usuario.getFoto() != null){
-            Uri url = Uri.parse(usuario.getFoto());
-            Glide.with(context).load(url).into(holder.circleImagePerfil);
+        //verifica se a conversa é de grupo
+        if (conversa.getIsGrupo().equals("true")){
+            Grupo grupo = conversa.getGrupo();
+            holder.textNome.setText(grupo.getNome());
+
+            if (grupo.getFoto() != null){
+                Uri url =Uri.parse(grupo.getFoto());
+                Glide.with(context).load(url).into(holder.circleImagePerfil);
+            }
+            else {
+                holder.circleImagePerfil.setImageResource(R.drawable.padrao);
+            }
+
         }
         else {
-            holder.circleImagePerfil.setImageResource(R.drawable.padrao);
+            Usuario usuario = conversa.getUsuarioExibicao();
+            holder.textNome.setText(usuario.getNome());
+            holder.textUltimaMsg.setText(conversa.getUltimaMensagem());
+
+            if (usuario.getFoto() != null){
+                Uri url = Uri.parse(usuario.getFoto());
+                Glide.with(context).load(url).into(holder.circleImagePerfil);
+            }
+            else {
+                holder.circleImagePerfil.setImageResource(R.drawable.padrao);
+            }
         }
+
 
     }
 

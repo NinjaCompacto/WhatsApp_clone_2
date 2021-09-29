@@ -9,6 +9,7 @@ import com.bumptech.glide.Glide;
 import com.example.whatsapp.Helper.Base64Custom;
 import com.example.whatsapp.Helper.UsuarioFirebase;
 import com.example.whatsapp.Model.Conversa;
+import com.example.whatsapp.Model.Grupo;
 import com.example.whatsapp.Model.Mensagem;
 import com.example.whatsapp.Model.Usuario;
 import com.example.whatsapp.adapter.ChatAdapter;
@@ -65,6 +66,7 @@ public class ChatActivity extends AppCompatActivity {
         private ImageView imageCamera;
         //id dos usuarios
         private String idusuarioremetente, idusuariodestinatario;
+        private Grupo grupo;
        //RecyclerView
         private RecyclerView recyclerMensagens;
         private ChatAdapter chatAdapter;
@@ -91,17 +93,29 @@ public class ChatActivity extends AppCompatActivity {
 
         //recuperando dados do usuariodestinatario
         Bundle bundle = getIntent().getExtras();
-        if (bundle !=  null){
-            usuariodestinatario = (Usuario) bundle.getSerializable("chatcontato");
-            textNome.setText(usuariodestinatario.getNome());
-                if (usuariodestinatario.getFoto() != null){
+        if (bundle !=  null) {
+
+            if (bundle.containsKey("chatgrupo")) {
+
+                grupo = (Grupo) bundle.getSerializable("chatgrupo");
+                textNome.setText(grupo.getNome());
+                idusuariodestinatario = grupo.getId();
+                if (grupo.getFoto() != null){
+                    Uri urlfoto = Uri.parse(grupo.getFoto());
+                    Glide.with(ChatActivity.this).load(urlfoto).into(circleImageChat);
+                }
+
+            } else {
+                usuariodestinatario = (Usuario) bundle.getSerializable("chatcontato");
+                textNome.setText(usuariodestinatario.getNome());
+                if (usuariodestinatario.getFoto() != null) {
                     Uri urlfoto = Uri.parse(usuariodestinatario.getFoto());
                     Glide.with(getApplication()).load(urlfoto).into(circleImageChat);
                 }
-            //recuperar id do usuario destinatario
-            idusuariodestinatario = Base64Custom.codificarBase64(usuariodestinatario.getEmail());
+                //recuperar id do usuario destinatario
+                idusuariodestinatario = Base64Custom.codificarBase64(usuariodestinatario.getEmail());
+            }
         }
-
         //atualizarMensagens();
 
         //configurando adapter
