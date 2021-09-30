@@ -58,15 +58,16 @@ public class ConversasAdapter extends RecyclerView.Adapter<ConversasAdapter.MyVi
         }
         else {
             Usuario usuario = conversa.getUsuarioExibicao();
-            holder.textNome.setText(usuario.getNome());
-            holder.textUltimaMsg.setText(conversa.getUltimaMensagem());
+            if (usuario != null) {
+                holder.textNome.setText(usuario.getNome());
+                holder.textUltimaMsg.setText(conversa.getUltimaMensagem());
 
-            if (usuario.getFoto() != null){
-                Uri url = Uri.parse(usuario.getFoto());
-                Glide.with(context).load(url).into(holder.circleImagePerfil);
-            }
-            else {
-                holder.circleImagePerfil.setImageResource(R.drawable.padrao);
+                if (usuario.getFoto() != null) {
+                    Uri url = Uri.parse(usuario.getFoto());
+                    Glide.with(context).load(url).into(holder.circleImagePerfil);
+                } else {
+                    holder.circleImagePerfil.setImageResource(R.drawable.padrao);
+                }
             }
         }
 

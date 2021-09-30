@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.bumptech.glide.Glide;
+import com.example.whatsapp.Fragments.ContatosFragment;
+import com.example.whatsapp.Fragments.ConversasFragment;
 import com.example.whatsapp.Helper.Base64Custom;
 import com.example.whatsapp.Helper.UsuarioFirebase;
 import com.example.whatsapp.Model.Conversa;
@@ -13,6 +15,7 @@ import com.example.whatsapp.Model.Grupo;
 import com.example.whatsapp.Model.Mensagem;
 import com.example.whatsapp.Model.Usuario;
 import com.example.whatsapp.adapter.ChatAdapter;
+import com.example.whatsapp.adapter.ContatosAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -71,6 +74,7 @@ public class ChatActivity extends AppCompatActivity {
         private RecyclerView recyclerMensagens;
         private ChatAdapter chatAdapter;
         private List<Mensagem> mensagens = new ArrayList<>();
+        private ConversasFragment conversasFragment = new ConversasFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -211,24 +215,45 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     public void enviar (View view) {
-        String Textomensagem = ediTextMessagem.getText().toString();
-
-        //verifica se a mensagem tem algum conteudo
-        if (!Textomensagem.isEmpty()){
-            Mensagem msg = new Mensagem();
-            msg.setMensagem(Textomensagem);
-            msg.setIdUsuario(idusuarioremetente);
-            //salvando mensagem
-            salvarMensagem(idusuarioremetente,idusuariodestinatario,msg);
-            //salvando conversa
-            salvarConversa(msg);
+    String Textomensagem = ediTextMessagem.getText().toString();
+        if (usuariodestinatario != null) {
+            //verifica se a mensagem tem algum conteudo
+            if (!Textomensagem.isEmpty()) {
+                Mensagem msg = new Mensagem();
+                msg.setMensagem(Textomensagem);
+                msg.setIdUsuario(idusuarioremetente);
+                //salvando mensagem
+                salvarMensagem(idusuarioremetente, idusuariodestinatario, msg);
+                //salvando conversa
+                salvarConversa(idusuarioremetente,idusuariodestinatario,usuariodestinatario,msg,false);
+                Usuario usuarioRemetente = UsuarioFirebase.getUsuarioLogado();
+                salvarConversa(idusuariodestinatario,idusuarioremetente,usuarioRemetente,msg,false);
+            } else {
+                Toast.makeText(ChatActivity.this, "Digite uma mensagem para enviar", Toast.LENGTH_SHORT).show();
+            }
         }
-        else{
-            Toast.makeText(ChatActivity.this,"Digite uma mensagem para enviar", Toast.LENGTH_SHORT).show();;
+        //caso a conversa for em grupo
+        else {
+            if (!Textomensagem.isEmpty()){
+                for (Usuario membro : grupo.getMembros()){
+                    String idRemetenteGrupo = Base64Custom.codificarBase64(membro.getEmail());
+                    String idUsuarioLogado = UsuarioFirebase.getIdUsuario();
+
+                    Mensagem msg = new Mensagem();
+                    msg.setIdUsuario(idUsuarioLogado);
+                    msg.setMensagem(Textomensagem);
+                    salvarMensagem(idRemetenteGrupo,idusuariodestinatario,msg);
+                    salvarConversa(idRemetenteGrupo,idusuariodestinatario,usuariodestinatario,msg,true);
+                }
+            }else{
+                Toast.makeText(ChatActivity.this, "Digite uma mensagem para enviar", Toast.LENGTH_SHORT).show();
+            }
+
         }
-
-
     }
+
+
+
 
     private void salvarMensagem (String idRemetente, String idDestinatario , Mensagem mensagem){
         mensagensref = firebasereference.child("mensagem");
@@ -238,12 +263,21 @@ public class ChatActivity extends AppCompatActivity {
         ediTextMessagem.setText("");
     }
 
-    private void salvarConversa (Mensagem mensagem){
+    private void salvarConversa (String idRemetente, String idDestinatario ,Usuario usuarioExibicao,Mensagem mensagem,boolean isGrupo){
             Conversa conversa = new Conversa();
-            conversa.setIdRemetente(idusuarioremetente);
-            conversa.setIdDestinatario(idusuariodestinatario);
-            conversa.setUsuarioExibicao(usuariodestinatario);
+            conversa.setIdRemetente(idRemetente);
+            conversa.setIdDestinatario(idDestinatario);
             conversa.setUltimaMensagem(mensagem.getMensagem());
+
+            if (isGrupo){//conversa de grupo
+                conversa.setIsGrupo("true");
+                conversa.setGrupo(grupo);
+            }
+            else {//conversa normal
+                conversa.setIsGrupo("false");
+                conversa.setUsuarioExibicao(usuarioExibicao);
+            }
+
             conversa.salvar();
     }
 
