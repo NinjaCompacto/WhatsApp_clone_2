@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.example.whatsapp.Fragments.ContatosFragment;
 import com.example.whatsapp.Fragments.ConversasFragment;
@@ -76,6 +75,26 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
                 //recuperando dados da fragment
+
+                switch (viewPager.getCurrentItem()){
+                    case 0:
+                        ConversasFragment conversasFragment = (ConversasFragment) adapter.getPage(0);
+                        if ( newText != null && !newText.isEmpty()){
+                            conversasFragment.PesquisarConversas(newText.toLowerCase());
+                        }else {
+                            conversasFragment.recuperarConversas();
+                        }
+                        break;
+                    case 1:
+                        ContatosFragment contatosFragment = (ContatosFragment) adapter.getPage(1);
+                        if ( newText != null && !newText.isEmpty()){
+                            contatosFragment.PesquisarContatos(newText.toLowerCase());
+                        }else {
+                            contatosFragment.recarregarContatos();
+                        }
+                        break;
+                }
+
                 ConversasFragment conversasFragment = (ConversasFragment) adapter.getPage(0);
                 ContatosFragment contatosFragment = (ContatosFragment) adapter.getPage(1);
                 if ( newText != null && !newText.isEmpty()){

@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.whatsapp.Model.Conversa;
 import com.example.whatsapp.Model.Grupo;
-import com.example.whatsapp.Model.Mensagem;
 import com.example.whatsapp.Model.Usuario;
 import com.example.whatsapp.R;
 
@@ -72,6 +71,10 @@ public class ConversasAdapter extends RecyclerView.Adapter<ConversasAdapter.MyVi
         }
 
 
+    }
+
+    public List<Conversa> getListaAtualizada () {
+        return this.contatosConversa;
     }
 
     @Override

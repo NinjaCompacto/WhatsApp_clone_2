@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -32,6 +31,10 @@ public class ContatosAdapter extends RecyclerView.Adapter<ContatosAdapter.MyView
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemlista = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_contatos,parent,false);
         return new MyViewHolder(itemlista);
+    }
+
+    public List<Usuario> getContatos () {
+        return this.contatos;
     }
 
     @Override

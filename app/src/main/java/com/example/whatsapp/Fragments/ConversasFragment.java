@@ -3,13 +3,12 @@ package com.example.whatsapp.Fragments;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.provider.ContactsContract;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,8 +18,7 @@ import com.example.whatsapp.ChatActivity;
 import com.example.whatsapp.Helper.RecyclerItemClickListener;
 import com.example.whatsapp.Helper.UsuarioFirebase;
 import com.example.whatsapp.Model.Conversa;
-import com.example.whatsapp.Model.Mensagem;
-import com.example.whatsapp.Model.Usuario;
+
 import com.example.whatsapp.R;
 import com.example.whatsapp.adapter.ConversasAdapter;
 import com.google.firebase.auth.FirebaseUser;
@@ -28,7 +26,7 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -120,7 +118,8 @@ public class ConversasFragment extends Fragment {
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        Conversa conversa = listConversas.get(position);
+                        List<Conversa> listaConversasAtualizada = conversasAdapter.getListaAtualizada();
+                        Conversa conversa = listaConversasAtualizada.get(position);
                         //verifica se é um grupo, para abrir o chat corretamente
                         if(conversa.getIsGrupo().equals("true")){
                             Intent i = new Intent(getActivity(),ChatActivity.class);
@@ -193,12 +192,23 @@ public class ConversasFragment extends Fragment {
         List<Conversa> listaConversasBusca = new ArrayList<>();
         for (Conversa conversa : listConversas){
 
-            String nome = conversa.getUsuarioExibicao().getNome().toLowerCase();
-            String ultimmsg = conversa.getUltimaMensagem().toLowerCase();
+            if (conversa.getUsuarioExibicao() != null){
+                String nome = conversa.getUsuarioExibicao().getNome().toLowerCase();
+                String ultimmsg = conversa.getUltimaMensagem().toLowerCase();
 
-            if ( nome.contains(texto) || ultimmsg.contains(texto)){
-                listaConversasBusca.add(conversa);
+                if ( nome.contains(texto) || ultimmsg.contains(texto)){
+                    listaConversasBusca.add(conversa);
+                }
+            } else {
+                String nome = conversa.getGrupo().getNome().toLowerCase();
+                String ultimmsg = conversa.getUltimaMensagem().toLowerCase();
+
+                if ( nome.contains(texto) || ultimmsg.contains(texto)){
+                    listaConversasBusca.add(conversa);
+                }
             }
+
+
         }
         conversasAdapter = new ConversasAdapter(listaConversasBusca,getActivity());
         recyclerView.setAdapter(conversasAdapter);

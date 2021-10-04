@@ -1,7 +1,6 @@
 package com.example.whatsapp.adapter;
 
 import android.content.Context;
-import android.media.Image;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,10 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.whatsapp.Helper.UsuarioFirebase;
 import com.example.whatsapp.Model.Mensagem;
-import com.example.whatsapp.Model.Usuario;
 import com.example.whatsapp.R;
 
-import java.util.EventListener;
 import java.util.List;
 
 public class ChatAdapter extends RecyclerView.Adapter <ChatAdapter.MyViewHolder> {
@@ -51,14 +48,26 @@ public class ChatAdapter extends RecyclerView.Adapter <ChatAdapter.MyViewHolder>
         Mensagem mensagem = mensagens.get(position);
         String msg = mensagem.getMensagem();
         String imagem = mensagem.getImagem();
+        String nome = mensagem.getNome();
 
         if (imagem != null){
             Uri url = Uri.parse(imagem);
             Glide.with(context).load(url).into(holder.imagem);
             holder.mensagem.setVisibility(View.GONE);
+            if (!nome.isEmpty()){
+                holder.nome.setText(nome);
+            }else {
+                holder.nome.setVisibility(View.GONE);
+            }
         }else{
             holder.mensagem.setText(msg);
             holder.imagem.setVisibility(View.GONE);
+            if (!nome.isEmpty()){
+                holder.nome.setText(nome);
+            }
+            else {
+                holder.nome.setVisibility(View.GONE);
+            }
         }
 
     }
@@ -86,10 +95,12 @@ public class ChatAdapter extends RecyclerView.Adapter <ChatAdapter.MyViewHolder>
     public class MyViewHolder extends RecyclerView.ViewHolder {
         TextView mensagem;
         ImageView imagem;
+        TextView nome;
         public MyViewHolder(View itemView) {
             super(itemView);
             mensagem = itemView.findViewById(R.id.textMensagem);
             imagem = itemView.findViewById(R.id.imageMensagemFoto);
+            nome = itemView.findViewById(R.id.textNomeExibicao);
         }
     }
     }

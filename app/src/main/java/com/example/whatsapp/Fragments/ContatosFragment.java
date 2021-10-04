@@ -117,7 +117,8 @@ public class ContatosFragment extends Fragment {
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        Usuario usuarioSelecionado = listacontatos.get(position);
+                        List<Usuario> listaUsuariosAtualizada = adapter.getContatos();
+                        Usuario usuarioSelecionado = listaUsuariosAtualizada.get(position);
                         if(usuarioSelecionado.getEmail().isEmpty()){
                             Intent i = new Intent(getActivity(), GrupoActivity.class);
                             startActivity(i);
@@ -139,10 +140,7 @@ public class ContatosFragment extends Fragment {
 
                     }
                 }));
-            Usuario itemgrupo = new Usuario();
-            itemgrupo.setEmail("");
-            itemgrupo.setNome("Novo grupo");
-            listacontatos.add(itemgrupo);
+        adicionarMenuNovoGrupo();
 
         return view;
     }
@@ -179,6 +177,7 @@ public class ContatosFragment extends Fragment {
        valueEventListenerContatos = usuarioref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
+                limparListaContatos();
                 for (DataSnapshot dados: snapshot.getChildren()) {
                     Usuario usuario = dados.getValue(Usuario.class);
                     String emailusueratual = usuarioatual.getEmail();
@@ -194,5 +193,17 @@ public class ContatosFragment extends Fragment {
 
             }
         });
+    }
+
+    public void limparListaContatos (){
+        listacontatos.clear();
+        adicionarMenuNovoGrupo();
+    }
+
+    public void adicionarMenuNovoGrupo () {
+        Usuario itemgrupo = new Usuario();
+        itemgrupo.setEmail("");
+        itemgrupo.setNome("Novo grupo");
+        listacontatos.add(itemgrupo);
     }
 }
